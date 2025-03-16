@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Random Maze Generator</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+    }
+
+    canvas {
+      border: 2px solid #333;
+      margin: 20px;
+      background-color: white;
+    }
+
+    .controls {
+      margin: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="controls">
+    <button onclick="generateNewMaze()">Refresh Maze</button>
+    <button onclick="downloadMaze()">Download PNG</button>
+  </div>
+  <canvas id="mazeCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('mazeCanvas');
+    const ctx = canvas.getContext('2d');
+    const CELL_SIZE = 20;
+    const WALL_WIDTH = 2;
+    let maze = [];
+
+    function initializeMaze() {
+      canvas.width = Math.floor(window.innerWidth * 0.8 / CELL_SIZE) * CELL_SIZE;
+      canvas.height = Math.floor(window.innerHeight * 0.7 / CELL_SIZE) * CELL_SIZE;
+
+      const cols = Math.floor(canvas.width / CELL_SIZE);
+      const rows = Math.floor(canvas.height / CELL_SIZE);
+
+      maze = Array(rows).fill().map((_, i) =>
+        Array(cols).fill().map((_, j) => ({
+          x: j * CELL_SIZE,
+          y: i * CELL_SIZE,
+          walls: [true, true, true, true], // top, right, bottom, left
+          visited: false
+        }))
+      );
+    }
+
+    function removeWalls(current, neighbor) {
+      const x = current.x / CELL_SIZE - neighbor.x / CELL_SIZE;
+      const y = current.y / CELL_SIZE - neighbor.y / CELL_SIZE;
+
+      if (x === 1) {
+        current.walls[3] = false;
+        neighbor.walls[1] = false;
+      } else if (x === -1) {
+        current.walls[1] = false;
+        neighbor.walls[3] = false;
+      }
+      if (y === 1) {
+        current.walls[0] = false;
+        neighbor.walls[2] = false;
+      } else if (y === -1) {
+        current.walls[2] = false;
+        neighbor.walls[0] = false;
+      }
+    }
+
+    function getUnvisitedNeighbors(cell) {
+      const neighbors = [];
+      const { x, y } = {
+        x: cell.x / CELL_SIZE,
+        y: cell.y / CELL_SIZE
+      };
+
+      const dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+      for (let [dx, dy] of dirs) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (nx >= 0 && nx < maze[0].length && ny >= 0 && ny < maze.length && !maze[ny][nx].visited) {
+          neighbors.push(maze[ny][nx]);
+        }
+      }
+      return neighbors;
+    }
+
+    async function generateMaze() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const stack = [];
+      const startCell = maze[0][0];
+      startCell.visited = true;
+      stack.push(startCell);
+
+      while (stack.length > 0) {
+        const current = stack[stack.length - 1];
+        const neighbors = getUnvisitedNeighbors(current);
+
+        if (neighbors.length > 0) {
+          const next = neighbors[Math.floor(Math.random() * neighbors.length)];
+          removeWalls(current, next);
+          next.visited = true;
+          stack.push(next);
+        } else {
+          stack.pop();
+        }
+      }
+      drawMaze();
+    }
+
+    function drawMaze() {
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = WALL_WIDTH;
+
+      maze.forEach(row => row.forEach(cell => {
+        const { x, y, walls } = cell;
+        if (walls[0]) drawWall(x, y, x + CELL_SIZE, y); // top
+        if (walls[1]) drawWall(x + CELL_SIZE, y, x + CELL_SIZE, y + CELL_SIZE); // right
+        if (walls[2]) drawWall(x, y + CELL_SIZE, x + CELL_SIZE, y + CELL_SIZE); // bottom
+        if (walls[3]) drawWall(x, y, x, y + CELL_SIZE); // left
+      }));
+    }
+
+    function drawWall(x1, y1, x2, y2) {
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+
+    function generateNewMaze() {
+      initializeMaze();
+      generateMaze();
+    }
+
+    function downloadMaze() {
+      const link = document.createElement('a');
+      link.download = 'maze.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+
+    window.addEventListener('resize', generateNewMaze);
+    initializeMaze();
+    generateMaze();
+  </script>
+</body>
+
+</html>

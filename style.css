@@ -1,0 +1,186 @@
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #1a1a1a 0%, #121212 100%);
+  color: #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+h1 {
+  background: linear-gradient(45deg, #00bcd4, #2196f3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 20px 0 10px;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+/* .path {
+  /* background-color: red !important; Use !important for quick testing 
+} */
+
+.subtitle {
+  color: #9e9e9e;
+  text-align: center;
+  margin-bottom: 30px;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+a {
+  text-decoration: none;
+  color: #e0e0e0;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: #00e676;
+}
+
+#controls,
+.cont {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+button {
+  background: linear-gradient(45deg, #2196f3, #00bcd4);
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(33, 150, 243, 0.25);
+}
+
+#maze,
+.maze {
+  display: grid;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.maze-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.cell {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.8em;
+  position: relative;
+}
+
+.cell.path {
+  background: #00e676;
+  animation: pulse 1.5s infinite;
+}
+
+.cell.wall {
+  background: #263238;
+}
+
+.cell.start {
+  background: #2196f3;
+  box-shadow: inset 0 0 12px rgba(33, 150, 243, 0.4);
+}
+
+.cell.target {
+  background: #ff5252;
+  box-shadow: inset 0 0 12px rgba(255, 82, 82, 0.4);
+}
+
+.cell.visited {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cell.head {
+  background: #ffd740;
+}
+
+.algorithm-definition {
+  font-size: 0.85em;
+  color: #bdbdbd;
+  margin-top: 10px;
+  line-height: 1.4;
+}
+
+.stats {
+  margin-top: 20px;
+  font-size: 14px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 280px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+#controls p {
+  color: #bdbdbd;
+  margin: 0;
+  align-self: center;
+  font-size: 0.9em;
+}
+
+#controls label {
+  color: #bdbdbd;
+  margin-left: 10px;
+}
+
+#controls input {
+  background: #333;
+  color: #e0e0e0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 5px;
+}
